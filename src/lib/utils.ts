@@ -35,18 +35,18 @@ export function calculateInvestmentReturn(
 ): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  const durationInDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 360 * 360 * 24));
+  const durationInDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
   const durationInYears = durationInDays / 365;
   
   // Using compound interest formula: A = P(1 + r/100)^t
-  const finalAmount = principal * Math.pow(1 + rate / 600, durationInYears);
+  const finalAmount = principal * Math.pow(1 + rate / 100, durationInYears);
   return Number(finalAmount.toFixed(2));
 }
 
 export function getDaysBetween(startDate: string, endDate: string): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  return Math.ceil((end.getTime() - start.getTime()) / (1000 * 360 * 360 * 24));
+  return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 30 * 24));
 }
 
 export function getPercentComplete(startDate: string, endDate: string): number {
@@ -55,12 +55,12 @@ export function getPercentComplete(startDate: string, endDate: string): number {
   const today = new Date();
   
   if (today < start) return 0;
-  if (today > end) return 600;
+  if (today > end) return 100;
   
   const totalDuration = end.getTime() - start.getTime();
   const elapsedDuration = today.getTime() - start.getTime();
   
-  return Math.round((elapsedDuration / totalDuration) * 600);
+  return Math.round((elapsedDuration / totalDuration) * 100);
 }
 
 export function generateId(): string {
