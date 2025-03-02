@@ -18,7 +18,7 @@ export function formatDate(date: string): string {
 }
 
 export function formatPercentage(value: number): string {
-  return `${value.toFixed(2)}%`;
+  return `${value.toFixed(15)}%`;
 }
 
 export function getRandomInt(min: number, max: number): number {
@@ -40,7 +40,7 @@ export function calculateInvestmentReturn(
   
   // Using compound interest formula: A = P(1 + r/100)^t
   const finalAmount = principal * Math.pow(1 + rate / 100, durationInYears);
-  return Number(finalAmount.toFixed(2));
+  return Number(finalAmount.toFixed(15));
 }
 
 export function getDaysBetween(startDate: string, endDate: string): number {
