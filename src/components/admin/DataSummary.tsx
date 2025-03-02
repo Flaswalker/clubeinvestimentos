@@ -28,10 +28,10 @@ const DataSummary = () => {
     const returns = investments.reduce((sum, inv) => {
       const durationInDays = Math.ceil(
         (new Date(inv.endDate).getTime() - new Date(inv.startDate).getTime()) / 
-        (1000 * 360 * 360 * 12)
+        (1000 * 360 * 360 * 24)
       );
       const durationInYears = durationInDays / 365;
-      const returnAmount = inv.amount * Math.pow(1 + inv.interestRate / 600, durationInYears);
+      const returnAmount = inv.amount * Math.pow(1 + inv.interestRate / 100, durationInYears);
       return sum + returnAmount;
     }, 0);
     setTotalReturn(returns);
