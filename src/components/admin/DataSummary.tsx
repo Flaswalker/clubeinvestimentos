@@ -31,7 +31,7 @@ const DataSummary = () => {
         (1000 * 60 * 60 * 24)
       );
       const durationInYears = durationInDays / 365;
-      const returnAmount = inv.amount * Math.pow(1 + inv.interestRate / 100, durationInYears);
+      const returnAmount = inv.amount * Math.pow(1 + inv.interestRate / 600, durationInYears);
       return sum + returnAmount;
     }, 0);
     setTotalReturn(returns);
