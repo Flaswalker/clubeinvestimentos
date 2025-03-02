@@ -1,75 +1,86 @@
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, formatDate, getPercentComplete } from "@/lib/utils";
-import { Investment } from "@/lib/auth";
-import { Progress } from "@/components/ui/progress";
-import { CalendarDays, DollarSign, TrendingUp } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Investment } from "@/lib/types";
+import { CalendarDays, DollarSign, Clock } from "lucide-react";
 
 interface InvestmentCardProps {
   investment: Investment;
 }
 
 const InvestmentCard = ({ investment }: InvestmentCardProps) => {
-  const percentComplete = getPercentComplete(investment.startDate, investment.endDate);
-  
+  // Format currency with Brazilian locale
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('pt-BR').format(date);
+  };
+
+  // Calculate expected return (simple example)
+  const calculateExpectedReturn = () => {
+    // Simple 30% annual return, scaled by months
+    const annualRate = 0.30;
+    const monthlyRate = annualRate / 12;
+    const totalReturn = investment.amount * Math.pow(1 + monthlyRate, investment.period);
+    return totalReturn;
+  };
+
+  // Calculate days remaining
+  const calculateDaysRemaining = () => {
+    const endDate = new Date(investment.endDate);
+    const today = new Date();
+    const diffTime = endDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+  };
+
   return (
-    <Card className="overflow-hidden elegant-hover glass-card">
+    <Card className="glass-card overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center justify-between">
-          <span>Investment</span>
-          <span className="text-sm font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">
-            {investment.status}
-          </span>
-        </CardTitle>
-        <CardDescription>Created on {formatDate(investment.createdAt)}</CardDescription>
+        <CardTitle>Investimento #{investment.id.substring(0, 8)}</CardTitle>
+        <CardDescription>
+          Iniciado em {formatDate(investment.startDate)}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="pb-2">
+      <CardContent>
         <div className="space-y-4">
-          <div className="flex items-center">
-            <DollarSign className="h-5 w-5 mr-2 text-primary" />
+          <div className="flex items-start gap-2">
+            <DollarSign className="h-5 w-5 text-primary mt-0.5" />
             <div>
-              <p className="text-sm text-muted-foreground">Amount</p>
-              <p className="font-semibold">{formatCurrency(investment.amount)}</p>
+              <h4 className="text-sm font-medium text-muted-foreground">Valor Investido</h4>
+              <p className="text-xl font-bold">{formatCurrency(investment.amount)}</p>
             </div>
           </div>
           
-          <div className="flex items-center">
-            <TrendingUp className="h-5 w-5 mr-2 text-primary" />
+          <div className="flex items-start gap-2">
+            <Clock className="h-5 w-5 text-primary mt-0.5" />
             <div>
-              <p className="text-sm text-muted-foreground">Interest Rate</p>
-              <p className="font-semibold">{investment.interestRate}% per year</p>
+              <h4 className="text-sm font-medium text-muted-foreground">Período</h4>
+              <p className="text-xl font-bold">{investment.period} meses</p>
             </div>
           </div>
           
-          <div className="flex items-center">
-            <CalendarDays className="h-5 w-5 mr-2 text-primary" />
+          <div className="flex items-start gap-2">
+            <CalendarDays className="h-5 w-5 text-primary mt-0.5" />
             <div>
-              <p className="text-sm text-muted-foreground">Period</p>
-              <p className="font-semibold">
-                {formatDate(investment.startDate)} - {formatDate(investment.endDate)}
-              </p>
+              <h4 className="text-sm font-medium text-muted-foreground">Data de Término</h4>
+              <p className="text-xl font-bold">{formatDate(investment.endDate)}</p>
+              <p className="text-sm text-muted-foreground">{calculateDaysRemaining()} dias restantes</p>
             </div>
           </div>
           
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Progress</span>
-              <span className="font-medium">{percentComplete}%</span>
-            </div>
-            <Progress value={percentComplete} className="h-2" />
+          <div className="pt-4 border-t border-white/10">
+            <h4 className="text-sm font-medium text-muted-foreground mb-1">Retorno Esperado</h4>
+            <p className="text-2xl font-bold text-primary">{formatCurrency(calculateExpectedReturn())}</p>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="pt-2">
-        <div className="w-full rounded-md bg-secondary/50 p-2">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium">Estimated Return</span>
-            <span className="font-bold text-primary">
-              {formatCurrency(investment.amount * (1 + investment.interestRate / 100))}
-            </span>
-          </div>
-        </div>
-      </CardFooter>
     </Card>
   );
 };
