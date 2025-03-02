@@ -28,7 +28,7 @@ const DataSummary = () => {
     const returns = investments.reduce((sum, inv) => {
       const durationInDays = Math.ceil(
         (new Date(inv.endDate).getTime() - new Date(inv.startDate).getTime()) / 
-        (1000 * 360 * 360 * 24)
+        (1000 * 60 * 60 * 24)
       );
       const durationInYears = durationInDays / 365;
       const returnAmount = inv.amount * Math.pow(1 + inv.interestRate / 100, durationInYears);
